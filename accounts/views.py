@@ -2,41 +2,40 @@ from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Q
 from django.shortcuts import redirect
-from allauth.account.views import LoginView, SignupView
-from .forms import CustomLoginForm, CustomSignupForm
+from django.contrib.auth.views import LoginView
+from django.views.generic.edit import FormView
+from django.contrib.auth import login
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from .forms import LoginForm, SignupForm
 
-class CustomLoginView(LoginView):
+User = get_user_model()
+
+class MyLoginView(LoginView):
+    form_class = LoginForm
     template_name = "accounts/login.html"
-    form_class = CustomLoginForm
+    redirect_authenticated_user = True
 
-class CustomSignupView(SignupView):
+class MySignupView(FormView):
+    form_class = SignupForm
     template_name = "accounts/signup.html"
-    form_class = CustomSignupForm
+    success_url = "/"  # Redirect to home page after successful signup
 
+    def form_valid(self, form):
+        # Create a new user
+        user = User.objects.create(
+            email=form.cleaned_data["email"],
+            username=form.cleaned_data["email"],
+            first_name=form.cleaned_data["first_name"],
+            last_name=form.cleaned_data["last_name"],
+            role=form.cleaned_data["role"],
+            password=make_password(form.cleaned_data["password"]),  # Hash the password
+        )
+        # Log the user in
+        login(self.request, user)
+        return super().form_valid(form)
 
-def login_page(request):
-    """Create a view for the login page."""
-    if request.method == "POST":
-        form = CustomLoginForm(request.POST)
-        if form.is_valid():
-            return redirect("/")  
-    else:
-        form = CustomLoginForm()
-    template = loader.get_template("accounts/login.html")
-    context = {"form": form}
-    return HttpResponse(template.render(context, request))
-
-def signup_page(request):
-    """Create a view for the signup page."""
-    if request.method == "POST":
-        form = CustomSignupForm(request.POST)
-        if form.is_valid():
-            print('Form is valid')
-            form.save(request)  
-            return redirect("/")  
-    else:
-        form = CustomSignupForm()
-    template = loader.get_template("accounts/signup.html")
-    context = {"form": form}
-    return HttpResponse(template.render(context, request))
+    def form_invalid(self, form):
+        # Handle invalid form submission
+        return super().form_invalid(form)
 

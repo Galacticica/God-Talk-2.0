@@ -24,14 +24,14 @@
                 {{ form.email.errors }}
             </div>
             <div class="mb-4">
-                {{ form.password1.label_tag }}
-                {{ form.password1 }}
-                {{ form.password1.errors }}
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {{ form.password.errors }}
             </div>
             <div class="mb-4">
-                {{ form.password2.label_tag }}
-                {{ form.password2 }}
-                {{ form.password2.errors }}
+                {{ form.confirm_password.label_tag }}
+                {{ form.confirm_password }}
+                {{ form.confirm_password.errors }}
             </div>
             <div class="mb-4">
                 {{ form.role.label_tag }}
@@ -44,7 +44,7 @@
         </form>
         <div class="mt-4 flex justify-between">
             <p> Already have an account? 
-                <a href="{% url 'account_login' %}" class="text-blue-500 hover:underline">
+                <a href="{% url 'login_page' %}" class="text-blue-500 hover:underline">
                     Log In
                 </a>
             </p>

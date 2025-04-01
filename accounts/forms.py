@@ -1,14 +1,39 @@
-from allauth.account.forms import LoginForm, SignupForm
 from django import forms
+from django.contrib.auth import authenticate as auth_authenticate
 
-class CustomLoginForm(LoginForm):
-    def __init__(self, *args, **kwargs):
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(
+        max_length=254,
+        required=True, 
+        widget=forms.TextInput(attrs={"placeholder": "Email Address", "class": "form-control"}),
+        label="Email"
+    )
+    password = forms.CharField(
+        max_length=128,
+        required=True,
+        widget=forms.PasswordInput(attrs={"placeholder": "Password", "class": "form-control"}),
+        label="Password"
+    )
+
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["login"].label = "Email"
-        self.fields["login"].widget.attrs.update({"placeholder": "Email Address"})
-        self.fields["password"].widget.attrs.update({"placeholder": "Password"})
+        self.request = request
+    
+    def clean(self):
+        self.user_cache = auth_authenticate(
+           self.request,
+           username=self.cleaned_data.get("email"),
+              password=self.cleaned_data.get("password")
+        )
+        if self.user_cache is None:
+           raise forms.ValidationError("Invalid email or password.")
+        return super().clean()
+    def get_user(self):
+        return self.user_cache
+    
 
-class CustomSignupForm(SignupForm):
+class SignupForm(forms.Form):
     ROLE_CHOICES = [
         (None, 'Select Role'),
         ('presem', 'Pre-Seminary Student'),
@@ -18,36 +43,55 @@ class CustomSignupForm(SignupForm):
         ('churchworker', 'Church Worker'),
     ]
 
+    email = forms.EmailField(
+        max_length=254,
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Email Address", "class": "form-control"}),
+        label="Email"
+    )
+    password = forms.CharField(
+        max_length=128,
+        required=True,
+        widget=forms.PasswordInput(attrs={"placeholder": "Password", "class": "form-control"}),
+        label="Password"
+    )
+    confirm_password = forms.CharField(
+        max_length=128,
+        required=True,
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password", "class": "form-control"}),
+        label="Confirm Password"
+    )
     first_name = forms.CharField(
         max_length=30,
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={"placeholder": "First Name", "class": "form-control"}),
         label="First Name"
     )
     last_name = forms.CharField(
         max_length=30,
-        required=False,
+        required=True,
         widget=forms.TextInput(attrs={"placeholder": "Last Name", "class": "form-control"}),
         label="Last Name"
     )
     role = forms.ChoiceField(
         choices=ROLE_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={"class": "form-control", "placeholder": "Select Role"}),
-        label="Role (if any)"
+        required=False,  
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Role"
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["email"].label = "Email"
-        self.fields["email"].widget.attrs.update({"placeholder": "Email Address"})
-        self.fields["password1"].widget.attrs.update({"placeholder": "Password"})
-        self.fields["password2"].widget.attrs.update({"placeholder": "Confirm Password"})
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
 
-    def save(self, request):
-        user = super().save(request)
-        user.first_name = self.cleaned_data.get('first_name')
-        user.last_name = self.cleaned_data.get('last_name')
-        user.role = self.cleaned_data.get('role') or None
-        user.save()
-        return user
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError("Passwords do not match.")
+
+        return cleaned_data
+
+
+
+
+
+

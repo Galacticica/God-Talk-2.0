@@ -9,12 +9,12 @@
             {% csrf_token %}
             {{ form.non_field_errors }}
             <div class="mb-4">
-                {{ form.login.label_tag }}
-                {{ form.login }}
-                {{ form.login.errors }}
+                <label for="id_email" class="block text-sm font-medium text-gray-700">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
             </div>
             <div class="mb-4">
-                {{ form.password.label_tag }}
+                <label for="id_password" class="block text-sm font-medium text-gray-700">Password</label>
                 {{ form.password }}
                 {{ form.password.errors }}
             </div>
@@ -23,11 +23,8 @@
             </button>
         </form>
         <div class="mt-4 flex justify-between">
-            <!-- <a href="{% url 'account_reset_password' %}" class="text-blue-500 hover:underline">
-                Forgot Password?
-            </a> -->
             <p> No Account Yet? 
-                <a href="{% url 'account_signup' %}" class="text-blue-500 hover:underline">
+                <a href="{% url 'signup_page' %}" class="text-blue-500 hover:underline">
                     Sign Up
                 </a>
             </p>
