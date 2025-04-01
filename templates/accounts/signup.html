@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen/2 pt-4">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+        <form method="post" action="{% url 'signup_page' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-4">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+                {{ form.first_name.errors }}
+            </div>
+            <div class="mb-4">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+                {{ form.last_name.errors }}
+            </div>
+            <div class="mb-4">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            <div class="mb-4">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+            </div>
+            <div class="mb-4">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </div>
+            <div class="mb-4">
+                {{ form.role.label_tag }}
+                {{ form.role }}
+                {{ form.role.errors }}
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full">
+                Sign Up
+            </button>
+        </form>
+        <div class="mt-4 flex justify-between">
+            <p> Already have an account? 
+                <a href="{% url 'account_login' %}" class="text-blue-500 hover:underline">
+                    Log In
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

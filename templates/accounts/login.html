@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen/2 pt-4">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">Log In</h2>
+        <form method="post" action="{% url 'login_page' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-4">
+                {{ form.login.label_tag }}
+                {{ form.login }}
+                {{ form.login.errors }}
+            </div>
+            <div class="mb-4">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full">
+                Log In
+            </button>
+        </form>
+        <div class="mt-4 flex justify-between">
+            <!-- <a href="{% url 'account_reset_password' %}" class="text-blue-500 hover:underline">
+                Forgot Password?
+            </a> -->
+            <p> No Account Yet? 
+                <a href="{% url 'account_signup' %}" class="text-blue-500 hover:underline">
+                    Sign Up
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

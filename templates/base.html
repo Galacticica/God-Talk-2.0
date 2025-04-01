@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <title>God Talk</title>
+</head>
+<body class="bg-blue-200 flex flex-col min-h-screen">
+    <header class="bg-blue-950 text-white p-6">
+        <div class="flex flex-col items-center font-sans">
+            <h1 class="text-8xl">God Talk</h1>
+            <p class="text-lg mt-2 self-end">Log In / Signup URL Here</p>
+        </div>
+    </header>
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="bg-blue-950 text-white p-6 mt-4">
+        <div class="flex flex-col items-center font-sans">
+            <p class="text-lg">God Talk</p>
+            <p class="text-sm">EST. 2024</p>
+        </div>
+    </footer>
+</body>
+</html>
