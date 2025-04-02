@@ -4,10 +4,12 @@ from django.db.models import Q
 from django.shortcuts import redirect
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import FormView
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from django.views import View
 from .forms import LoginForm, SignupForm
+
 
 User = get_user_model()
 
@@ -29,13 +31,16 @@ class MySignupView(FormView):
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
             role=form.cleaned_data["role"],
-            password=make_password(form.cleaned_data["password"]),  # Hash the password
+            password=make_password(form.cleaned_data["password"]), 
         )
-        # Log the user in
         login(self.request, user)
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        # Handle invalid form submission
         return super().form_invalid(form)
+
+class MyLogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)  
+        return redirect("/")  
 

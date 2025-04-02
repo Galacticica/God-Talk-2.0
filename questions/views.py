@@ -1,3 +1,35 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.template import loader
+from django.db.models import Q
+from django.shortcuts import render, redirect
+from django.views import View
+from .forms import AskQuestionForm
+from .models import Message
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+
+class HomeView(LoginRequiredMixin, View):
+    login_url = "/account/login/"  
+    redirect_field_name = "next" 
+
+    def get(self, request, *args, **kwargs):
+        template = loader.get_template("questions/home.html")
+        return HttpResponse(template.render({}, request))
+
+@login_required(login_url="/account/login/") 
+def ask_question_view(request):
+    if request.method == 'POST':
+        form = AskQuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.author = request.user 
+            question.save()
+            return redirect('/')  
+    else:
+        form = AskQuestionForm()  
+    return render(request, 'questions/ask_question.html', {'form': form})
+
+
+
