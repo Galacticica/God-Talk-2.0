@@ -21,7 +21,9 @@
 <body class="bg-blue-200 flex flex-col min-h-screen">
     <header class="bg-blue-950 text-white p-6">
         <div class="flex flex-col items-center font-sans">
-            <h1 class="text-8xl">God Talk</h1>
+            <h1 class="text-8xl">
+                <a href="{% url 'home_page' %}" class="text-white">God Talk</a>
+            </h1>
             <p class="text-lg mt-2 self-end">
                 {% if user.is_authenticated %}
                     <a href="{% url 'logout_page' %}" class="text-blue-300 hover:underline">Log Out</a>

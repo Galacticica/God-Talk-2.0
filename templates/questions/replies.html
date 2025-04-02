@@ -1,0 +1,24 @@
+{% for reply in messages %}
+    <li class="mt-4 pl-4  border-gray-200 space-y-2">
+        <div class="prose text-left text-base">
+            {{ reply.body|safe }}
+        </div>
+        <div class="flex justify-between items-center mt-2">
+            <p class="text-sm text-gray-500">
+                By <span class="font-semibold">{{ reply.author }} {% if reply.author.role %} · {{ reply.author.role }} {% endif %}</span> on {{ reply.timestamp }}
+            </p>
+            <a href="{% url 'ask_question_page' reply.id %}" 
+               class="text-blue-500 hover:underline">
+                Reply
+            </a>
+        </div>
+        {% if reply.replies.all %}
+            <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ reply.id }}')">
+                Show Replies ({{ reply.replies.count }})
+            </button>
+            <ul id="replies-{{ reply.id }}" class="mt-4 pl-4 border-l-2 border-gray-200 space-y-2 hidden">
+                {% include "questions/replies.html" with messages=reply.replies.all %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}

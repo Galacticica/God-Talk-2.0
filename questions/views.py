@@ -15,14 +15,22 @@ class HomeView(LoginRequiredMixin, View):
     redirect_field_name = "next" 
 
     def get(self, request, *args, **kwargs):
+        messages = Message.objects.filter(parent__isnull=True)
         template = loader.get_template("questions/home.html")
-        return HttpResponse(template.render({}, request))
+        context = {
+            "messages": messages,
+        }
+        return HttpResponse(template.render(context, request))
 
 @login_required(login_url="/account/login/") 
-def ask_question_view(request):
+def ask_question_view(request, parent_id=None):
     if request.method == 'POST':
         form = AskQuestionForm(request.POST)
         if form.is_valid():
+            if parent_id:
+                parent = Message.objects.get(id=parent_id)
+                question = form.save(commit=False)
+                question.parent = parent
             question = form.save(commit=False)
             question.author = request.user 
             question.save()
@@ -30,6 +38,8 @@ def ask_question_view(request):
     else:
         form = AskQuestionForm()  
     return render(request, 'questions/ask_question.html', {'form': form})
+
+
 
 
 

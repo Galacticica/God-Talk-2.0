@@ -6,6 +6,76 @@
     <a href="{% url 'ask_question_page' %}" class="bg-blue-500 text-white px-12 py-6 rounded text-2xl font-bold shadow-lg hover:bg-blue-600">
         Ask a Question
     </a>
-    
 </div>
+
+<div class="mt-12">
+    <div class="flex justify-center">
+        <ul class="w-full max-w-3xl bg-white shadow-md rounded-lg p-6 space-y-4">
+            {% for message in messages %}
+                <li class="border-b pb-4 last:border-b-0">
+                    <div class="prose mx-auto text-left text-lg">
+                        {{ message.body|safe }}
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <p class="text-sm text-gray-500">
+                            By <span class="font-semibold">{{ message.author }} {% if message.author.role %} · {{ message.author.role }} {% endif %}</span> on {{ message.timestamp }}
+                        </p>
+                        <a href="{% url 'ask_question_page' message.id %}" 
+                           class="text-blue-500 hover:underline">
+                            Reply
+                        </a>
+                    </div>
+                    {% if message.replies.all %}
+                        <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ message.id }}')">
+                            Show Replies ({{ message.replies.count }})
+                        </button>
+                        <ul id="replies-{{ message.id }}" class="ml-6 mt-4 border-l-2 border-gray-200 pl-4 space-y-2 hidden">
+                            {% for reply in message.replies.all %}
+                                <li>
+                                    <div class="prose text-left text-base">
+                                        {{ reply.body|safe }}
+                                    </div>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <p class="text-sm text-gray-500">
+                                            By <span class="font-semibold">{{ reply.author }} {% if reply.author.role %} · {{ reply.author.role }} {% endif %}</span> on {{ reply.timestamp }}
+                                        </p>
+                                        <a href="{% url 'ask_question_page' reply.id %}" 
+                                           class="text-blue-500 hover:underline">
+                                            Reply
+                                        </a>
+                                    </div>
+                                    {% if reply.replies.all %}
+                                        <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ reply.id }}')">
+                                            Show Replies ({{ reply.replies.count }})
+                                        </button>
+                                        <ul id="replies-{{ reply.id }}" class="ml-6 mt-4 border-l-2 border-gray-200 pl-4 space-y-2 hidden">
+                                            {% include "questions/replies.html" with messages=reply.replies.all %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li class="text-center text-gray-500">No messages have been posted yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    function toggleReplies(id) {
+        const replies = document.getElementById(id);
+        if (replies) {
+            if (replies.classList.contains('hidden')) {
+                replies.classList.remove('hidden');
+            } else {
+                replies.classList.add('hidden');
+            }
+        } else {
+            console.error(`Replies container with id "${id}" not found.`);
+        }
+    }
+</script>
 {% endblock %}

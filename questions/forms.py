@@ -11,4 +11,3 @@ class AskQuestionForm(forms.ModelForm):
         labels = {
             'body': 'Your Question',
         }
-
