@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .forms import AskQuestionForm
 from .models import Message
@@ -40,6 +40,26 @@ def ask_question_view(request, parent_id=None):
     return render(request, 'questions/ask_question.html', {'form': form})
 
 
+@login_required(login_url="/account/login/")
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id, author=request.user)
+    message.delete()
+    return redirect('/')
 
+
+@login_required(login_url="/account/login/")
+def like_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+    message.likes += 1
+    message.save()
+    return JsonResponse({'likes': message.likes, 'dislikes': message.dislikes})
+
+
+@login_required(login_url="/account/login/")
+def dislike_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+    message.dislikes += 1
+    message.save()
+    return JsonResponse({'likes': message.likes, 'dislikes': message.dislikes})
 
 

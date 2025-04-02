@@ -20,10 +20,22 @@
                         <p class="text-sm text-gray-500">
                             By <span class="font-semibold">{{ message.author }} {% if message.author.role %} · {{ message.author.role }} {% endif %}</span> on {{ message.timestamp }}
                         </p>
-                        <a href="{% url 'ask_question_page' message.id %}" 
-                           class="text-blue-500 hover:underline">
-                            Reply
-                        </a>
+                        <div class="flex items-center space-x-4">
+                            <a href="{% url 'ask_question_page' message.id %}" class="text-blue-500 hover:underline">
+                                Reply
+                            </a>
+                            {% if message.author.id == user.id %}
+                                <a href="{% url 'delete_message' message.id %}" class="text-blue-500 hover:underline">
+                                    Delete
+                                </a>
+                            {% endif %}
+                            <button onclick="likeMessage({{ message.id }})" class="text-green-500 hover:underline">
+                                Like ({{ message.likes }})
+                            </button>
+                            <button onclick="dislikeMessage({{ message.id }})" class="text-red-500 hover:underline">
+                                Dislike ({{ message.dislikes }})
+                            </button>
+                        </div>
                     </div>
                     {% if message.replies.all %}
                         <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ message.id }}')">
@@ -39,10 +51,18 @@
                                         <p class="text-sm text-gray-500">
                                             By <span class="font-semibold">{{ reply.author }} {% if reply.author.role %} · {{ reply.author.role }} {% endif %}</span> on {{ reply.timestamp }}
                                         </p>
-                                        <a href="{% url 'ask_question_page' reply.id %}" 
-                                           class="text-blue-500 hover:underline">
-                                            Reply
-                                        </a>
+                                        <div class="flex items-center space-x-2">
+                                            <a href="{% url 'ask_question_page' reply.id %}" 
+                                               class="text-blue-500 hover:underline">
+                                                Reply
+                                            </a>
+                                            {% if reply.author.id == user.id %}
+                                                <a href="{% url 'delete_message' reply.id %}" 
+                                                   class="text-blue-500 hover:underline">
+                                                    Delete
+                                                </a>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                     {% if reply.replies.all %}
                                         <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ reply.id }}')">
@@ -76,6 +96,36 @@
         } else {
             console.error(`Replies container with id "${id}" not found.`);
         }
+    }
+
+    function likeMessage(messageId) {
+        fetch(`/like/${messageId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            const likeButton = document.querySelector(`button[onclick="likeMessage(${messageId})"]`);
+            likeButton.textContent = `Like (${data.likes})`;
+        });
+    }
+
+    function dislikeMessage(messageId) {
+        fetch(`/dislike/${messageId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            const dislikeButton = document.querySelector(`button[onclick="dislikeMessage(${messageId})"]`);
+            dislikeButton.textContent = `Dislike (${data.dislikes})`;
+        });
     }
 </script>
 {% endblock %}

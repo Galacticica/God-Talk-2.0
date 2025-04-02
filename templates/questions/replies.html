@@ -1,5 +1,5 @@
 {% for reply in messages %}
-    <li class="mt-4 pl-4  border-gray-200 space-y-2">
+    <li class="mt-4 pl-4 border-gray-200 space-y-2">
         <div class="prose text-left text-base">
             {{ reply.body|safe }}
         </div>
@@ -7,10 +7,22 @@
             <p class="text-sm text-gray-500">
                 By <span class="font-semibold">{{ reply.author }} {% if reply.author.role %} · {{ reply.author.role }} {% endif %}</span> on {{ reply.timestamp }}
             </p>
-            <a href="{% url 'ask_question_page' reply.id %}" 
-               class="text-blue-500 hover:underline">
-                Reply
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'ask_question_page' reply.id %}" class="text-blue-500 hover:underline">
+                    Reply
+                </a>
+                {% if reply.author.id == user.id %}
+                    <a href="{% url 'delete_message' reply.id %}" class="text-blue-500 hover:underline">
+                        Delete
+                    </a>
+                {% endif %}
+                <button onclick="likeMessage({{ reply.id }})" class="text-green-500 hover:underline">
+                    Like ({{ reply.likes }})
+                </button>
+                <button onclick="dislikeMessage({{ reply.id }})" class="text-red-500 hover:underline">
+                    Dislike ({{ reply.dislikes }})
+                </button>
+            </div>
         </div>
         {% if reply.replies.all %}
             <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ reply.id }}')">
