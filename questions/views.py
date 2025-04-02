@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.template import loader
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .forms import AskQuestionForm
 from .models import Message
@@ -39,7 +39,11 @@ def ask_question_view(request, parent_id=None):
         form = AskQuestionForm()  
     return render(request, 'questions/ask_question.html', {'form': form})
 
-
+@login_required(login_url="/account/login/")
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id, author=request.user)
+    message.delete()
+    return redirect('/')
 
 
 

@@ -20,10 +20,16 @@
                         <p class="text-sm text-gray-500">
                             By <span class="font-semibold">{{ message.author }} {% if message.author.role %} · {{ message.author.role }} {% endif %}</span> on {{ message.timestamp }}
                         </p>
-                        <a href="{% url 'ask_question_page' message.id %}" 
-                           class="text-blue-500 hover:underline">
-                            Reply
-                        </a>
+                        <div class="flex items-center space-x-4">
+                            <a href="{% url 'ask_question_page' message.id %}" class="text-blue-500 hover:underline">
+                                Reply
+                            </a>
+                            {% if message.author.id == user.id %}
+                                <a href="{% url 'delete_message' message.id %}" class="text-blue-500 hover:underline">
+                                    Delete
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                     {% if message.replies.all %}
                         <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ message.id }}')">
@@ -39,10 +45,16 @@
                                         <p class="text-sm text-gray-500">
                                             By <span class="font-semibold">{{ reply.author }} {% if reply.author.role %} · {{ reply.author.role }} {% endif %}</span> on {{ reply.timestamp }}
                                         </p>
-                                        <a href="{% url 'ask_question_page' reply.id %}" 
-                                           class="text-blue-500 hover:underline">
-                                            Reply
-                                        </a>
+                                        <div class="flex items-center space-x-4">
+                                            <a href="{% url 'ask_question_page' reply.id %}" class="text-blue-500 hover:underline">
+                                                Reply
+                                            </a>
+                                            {% if message.author.id == user.id %}
+                                                <a href="{% url 'delete_message' reply.id %}" class="text-blue-500 hover:underline">
+                                                    Delete
+                                                </a>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                     {% if reply.replies.all %}
                                         <button class="mt-4 text-blue-500 hover:underline" onclick="toggleReplies('replies-{{ reply.id }}')">
