@@ -36,7 +36,11 @@
     </main>
     <footer class="bg-blue-950 text-white p-6 mt-4">
         <div class="flex flex-col items-center font-sans">
-            <p class="text-lg">God Talk</p>
+            {% if user.is_authenticated and user.is_staff %}
+                <p class="text-lg">CUNE Reddit</p>
+            {% else %}
+                <p class="text-lg">God Talk</p>
+            {% endif %}
             <p class="text-sm">EST. 2024</p>
         </div>
     </footer>

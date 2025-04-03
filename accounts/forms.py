@@ -36,11 +36,16 @@ class LoginForm(forms.Form):
 class SignupForm(forms.Form):
     ROLE_CHOICES = [
         (None, 'Select Role'),
-        ('presem', 'Pre-Seminary Student'),
-        ('seminary', 'Seminary Student'),
-        ('theologyprof', 'Theology Professor'),
-        ('pastor', 'Pastor'),
-        ('churchworker', 'Church Worker'),
+        ('Student', 'Student'),
+        ('Pre-Seminary Student', 'Pre-Seminary Student'),
+        ('Seminary Student', 'Seminary Student'),
+        ('Theology Professor', 'Theology Professor'),
+        ('Vicar', 'Vicar'),
+        ('Deaconess', 'Deaconess'),
+        ('Deacon', 'Deacon'),
+        ('Pastor', 'Pastor'),
+        ('Church Worker', 'Church Worker'),
+        ('Lutheran Teacher', 'Lutheran Teacher'),
     ]
 
     email = forms.EmailField(
