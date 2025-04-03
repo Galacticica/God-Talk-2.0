@@ -1,6 +1,3 @@
-from django.http import HttpResponse
-from django.template import loader
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.contrib.auth.views import LoginView
 from django.views.generic.edit import FormView
