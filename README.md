@@ -1,7 +1,7 @@
 # God Talk 2.0
 ## What Is God Talk?
 God Talk is a website in which Concordia students can ask questions about chapel or praise messages and receive answers from qualified individuals.
-The original version can be viewed at ```https://github.com/Galacticica/four_promises_hackathon```
+The original version can be viewed [here](https://github.com/Galacticica/four_promises_hackathon)
 
 ## Usage
 #### Cloning Down The Code
