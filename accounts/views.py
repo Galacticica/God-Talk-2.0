@@ -18,10 +18,9 @@ class MyLoginView(LoginView):
 class MySignupView(FormView):
     form_class = SignupForm
     template_name = "accounts/signup.html"
-    success_url = "/"  # Redirect to home page after successful signup
+    success_url = "/" 
 
     def form_valid(self, form):
-        # Create a new user
         user = User.objects.create(
             email=form.cleaned_data["email"],
             username=form.cleaned_data["email"],
